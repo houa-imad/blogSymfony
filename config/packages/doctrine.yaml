@@ -16,6 +16,8 @@ doctrine:
                 prefix: 'App\Entity'
                 alias: App
 
+
+
 when@test:
     doctrine:
         dbal:
