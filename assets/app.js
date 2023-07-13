@@ -10,4 +10,17 @@ import './styles/app.css';
 import './script/app.js';
 import 'tw-elements';
 
+import Like from './script/like.js';
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded');
+
+    const likeEle =[].slice.call(document.querySelectorAll('a[data-action="like"]'));
+ 
+    if(likeEle){
+        // console.log(likeEle);
+        new Like(likeEle);
+    }
+});
+
+
 console.log('Hello Webpack Encore! Edit me in assets/app.js')

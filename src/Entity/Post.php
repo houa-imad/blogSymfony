@@ -3,11 +3,13 @@
 namespace App\Entity;
 
 use App\Entity\Tag;
+use App\Entity\User;
 use App\Entity\Category;
 use Cocur\Slugify\Slugify;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PostRepository;
+use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -58,9 +60,12 @@ class Post
     private Collection $tags;
 
     
-    // #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'posts')]
-    // #[JoinTable(name: 'tag_post')]
-    // private Collection $tags;
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[JoinTable(name: 'user_post_like')]
+    private Collection $likes;
+
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post',orphanRemoval: true )]
+    private Collection $comments;
 
 
 
@@ -70,8 +75,11 @@ class Post
         $this->createdAt = new \DateTimeImmutable();
         $this->category = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     
     }
+
     #[ORM\PreUpdate]
     public function preUpdate()
     {
@@ -223,6 +231,68 @@ class Post
     public function removeTag(Tag $tag): static
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLikes(User $likes): static
+    {
+        if (!$this->likes->contains($likes)) {
+            $this->likes[] = $likes;
+        }
+
+        return $this;
+    }
+    public function removeLikes(User $likes): static
+    {
+        $this->likes->removeElement($likes);
+
+        return $this;
+    }
+
+    public function isLikedByUser(User $user): bool
+    {
+     return $this->likes->contains($user);
+    }
+
+    public function getLikeCount(): int
+    {
+        return $this->likes->count();
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+
+            if($comment->getPost() === $this){
+                $comment->setPost(null);
+            }
+        
+        }
 
         return $this;
     }

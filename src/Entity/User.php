@@ -62,6 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function preUpdate(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
+        $this->avatar ='https://avatars.dicebear.com/api/big-ears/' . $this->email .'.svg';
     }
 
     #[ORM\PrePersist]
@@ -199,9 +200,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return null;
     }
 
-    public function __toString(): string
+    public function __toString()
     {
-        return $this->firstName . ' ' . $this->lastName;
+        return $this->firstName ;
     }
 
 }

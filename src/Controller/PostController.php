@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\Comment;
 use App\Form\SearchType;
+use App\Form\CommentType;
 use App\Model\SearchData;
 use App\Repository\PostRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,14 +65,35 @@ class PostController extends AbstractController
     }
     
 
-    #[Route('/post/{slug}', name: 'app_show', methods: ['GET'])]
+    #[Route('/post/{slug}', name: 'app_show', methods: ['GET', 'POST'])]
     #[ParamConverter('post', class: 'App\Entity\Post')]
-    public function show(Post $post, PostRepository $postRepository): Response
+    public function show(Post $post, Request $request, EntityManagerInterface $em): Response
     {
+      $comment = new Comment();
+        $comment->setPost($post);
+      if($this->getUser()){
+        $comment->setAuthor($this->getUser());
+      }
+
+      $form = $this->createForm(CommentType::class, $comment);
+      $form->handleRequest($request);
+
+      if($form->isSubmitted() && $form->isValid()){
+
+        $comment->setIsApproved(0);
+
+        $em->persist($comment);
+        $em->flush();
+
+        $this->addFlash('success', 'Votre commentaire a été envoyé avec succès, il sera publié après validation par l\'administrateur');
+
+        return $this->redirectToRoute('app_show', ['slug' => $post->getSlug()]);
+      }
       
 
         return $this->render('post/show.html.twig', [
             'post' => $post,
+            'form' => $form->createView()
         ]);
     }
 
