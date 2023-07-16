@@ -26,6 +26,9 @@ class Comment
     #[ORM\Column(nullable: true)]
     private ?bool $isApproved = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isEditing = false;
+
     #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private Post $post;
@@ -33,6 +36,7 @@ class Comment
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private User $author;
+
 
     public function __construct()
     {
@@ -81,6 +85,22 @@ class Comment
         return $this;
     }
 
+    public function getIsEditing(): ?bool
+    {
+        return $this->isEditing;
+    }
+
+    public function setIsEditing(?bool $isEditing): self
+    {
+        $this->isEditing = $isEditing;
+
+        return $this;
+    }
+
+    public function isEditable(): bool
+    {
+        return $this->author === $this->getAuthor() && !$this->isApproved;
+    }
 
     public function getPost(): ?Post
     {

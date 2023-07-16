@@ -22,8 +22,9 @@ class UserFixtures extends Fixture
 
         // My user
         $user = new User();
-        $user->setEmail('matt@gmail.com')
-            ->setFirstName('Matthieu')
+        $user->setEmail('imad@gmail.com')
+            ->setFirstName('Imad')
+            ->setLastName('Houari')
             ->setPassword(
                 $this->hasher->hashPassword($user, 'password')
             );

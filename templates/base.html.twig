@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-   
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<link
+		rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
 
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-       {% include "partials/_header.html.twig" %}
+		{# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
+		{% endblock %}
+
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
+	</head>
+	<body>
+		{% include "partials/_header.html.twig" %}
 		{% block body %}{% endblock %}
 		{% include "partials/_footer.html.twig" %}
 
-{{ encore_entry_script_tags('tw-elements') }}
-<script src="https://cdn.tailwindcss.com/2.2.19/tailwind.min.js"></script>
-<script> 
 
-const dropdowns = document.querySelectorAll('.dropdown');
+		{{ encore_entry_script_tags('tw-elements') }}
+		<script src="https://cdn.tailwindcss.com/2.2.19/tailwind.min.js"></script>
+		<script>
+
+			const dropdowns = document.querySelectorAll('.dropdown');
 dropdowns.forEach(dropdown => {
-  dropdown.addEventListener('click', () => {
-    dropdown.classList.toggle('open');
-  });
+dropdown.addEventListener('click', () => {
+dropdown.classList.toggle('open');
 });
-</script>
-    </body>
+});
+		</script>
+	</body>
 </html>
